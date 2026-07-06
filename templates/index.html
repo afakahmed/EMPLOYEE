@@ -991,14 +991,53 @@ async function renderDashboard(){
   destroyCharts();
   const varied = ["#7C3AED","#10B981","#F97316","#EC4899","#06B6D4","#F59E0B","#2563EB","#EF4444"];
 
-  state.charts.hiring = new Chart(document.getElementById("hiringChart"), {
-    type:"bar",
-    data:{
-      labels:stats.hiring_trend.labels,
-      datasets:[{label:"Hires",data:stats.hiring_trend.data,backgroundColor:"#7C3AED",borderRadius:12}]
+ const hiringTrend = stats.hiring_trend || { labels: [], data: [] };
+const hiringMax = Math.max(1, ...(hiringTrend.data || [0]));
+
+state.charts.hiring = new Chart(document.getElementById("hiringChart"), {
+  type: "bar",
+  data: {
+    labels: hiringTrend.labels,
+    datasets: [
+      {
+        label: "Hires",
+        data: hiringTrend.data,
+        backgroundColor: [
+          "#7C3AED",
+          "#4F46E5",
+          "#2563EB",
+          "#06B6D4",
+          "#10B981",
+          "#F97316"
+        ],
+        borderRadius: 12,
+        borderSkipped: false
+      }
+    ]
+  },
+  options: {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: { display: false },
+      tooltip: {
+        callbacks: {
+          label: ctx => `Hires: ${ctx.raw}`
+        }
+      }
     },
-    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{y:{beginAtZero:true,ticks:{precision:0}}}}
-  });
+    scales: {
+      y: {
+        beginAtZero: true,
+        suggestedMax: hiringMax + 1,
+        ticks: { precision: 0 }
+      },
+      x: {
+        grid: { display: false }
+      }
+    }
+  }
+});
 
   state.charts.department = new Chart(document.getElementById("departmentChart"), {
     type:"doughnut",
