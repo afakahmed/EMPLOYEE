@@ -113,11 +113,21 @@ def parse_date(value):
     if not value:
         return None
     value = str(value)
+    
+    # 1. Try standard ISO parsing first (handles formats automatically)
+    try:
+        # replace Z with +00:00 for python < 3.11 compatibility
+        return datetime.fromisoformat(value.replace("Z", "+00:00"))
+    except ValueError:
+        pass
+
+    # 2. Fallback without the incorrect slicing logic
     for fmt in ("%Y-%m-%d", "%Y-%m", "%Y-%m-%dT%H:%M:%S.%f", "%Y-%m-%dT%H:%M:%S"):
         try:
-            return datetime.strptime(value[: len(fmt)], fmt)
+            return datetime.strptime(value, fmt)
         except ValueError:
             continue
+            
     return None
 
 
