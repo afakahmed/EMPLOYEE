@@ -310,7 +310,7 @@ def dashboard_stats():
 
         hiring_counts = Counter()
         for employee in employees:
-            dt = parse_date(employee.get("hire_date"))
+            dt = parse_date(employee.get("hire_date") or employee.get("created_at"))
             if dt:
                 hiring_counts[(dt.year, dt.month)] += 1
 
