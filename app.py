@@ -308,13 +308,7 @@ def dashboard_stats():
                 y -= 1
             month_starts.append(datetime(y, m, 1))
 
-        hiring_counts = Counter()
-for employee in employees:
-    # Prefer hire_date, but fall back to created_at so newly created employees
-    # still appear in the hiring trend if hire_date is empty.
-    dt = parse_date(employee.get("hire_date") or employee.get("created_at"))
-    if dt:
-        hiring_counts[(dt.year, dt.month)] += 1
+       
 
         hiring_labels = [month_key(dt) for dt in month_starts]
         hiring_data = [hiring_counts[(dt.year, dt.month)] for dt in month_starts]
